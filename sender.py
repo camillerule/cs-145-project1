@@ -10,6 +10,6 @@ clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 clientSock.bind(('', 6745))
 clientSock.sendto(Message, (UDP_IP_ADDRESS,UDP_PORT_NO))
 
-trans_id,addr = clientSock.recvform(1024)
+trans_id,addr = clientSock.recvfrom(1024)
 trans_id = transid.decode()
 print("Trans:", trans_id)
