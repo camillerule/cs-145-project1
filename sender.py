@@ -11,5 +11,5 @@ clientSock.bind(('', 6745))
 clientSock.sendto(Message, (UDP_IP_ADDRESS,UDP_PORT_NO))
 
 trans_id,addr = clientSock.recvfrom(1024)
-trans_id = transid.decode()
+trans_id = trans_id.decode()
 print("Trans:", trans_id)
