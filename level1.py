@@ -1,8 +1,8 @@
 import socket
 
 ID = "ID44919a94"
-UDP_IP_ADDRESS = "192.168.1.234"
-UDP_PORT_NO = 6745
+UDP_IP_ADDRESS = "10.0.1.175"
+UDP_PORT_NO = 9000
 
 Message = ID.encode()
 
