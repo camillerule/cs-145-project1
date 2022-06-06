@@ -47,6 +47,7 @@ dp_size = len(dp)
 accepted = 0
 increment = 0
 maxed = 0
+sent = ''
 packet_size = int(ceil(0.03125 * dp_size)) #set 1/4 of size as best guess packet size
 
 print(f"Length: {dp_size}")
@@ -71,6 +72,7 @@ while charsent < dp_size:
     try:
         response, addr = clientSock.recvfrom(1024) 
         accepted = 1
+        sent += dp[charsent:charsent+packet_size] # concatenate sent packets
         print("ACK received...")
         rescheck = response.decode()
         rescheck = rescheck[23:]
@@ -97,3 +99,4 @@ while charsent < dp_size:
             increment = 1
             packet_size = prev
 
+print("\nSent: {}\nData: {}".format(sent,dp))
