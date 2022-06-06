@@ -17,7 +17,7 @@ UDP_IP_PORT = (UDP_IP_ADDRESS, UDP_PORT_NO)
 #Create socket for receiving packets from server 
 clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 clientSock.bind(('', 6745))
-clientSock.settimeout(100)
+clientSock.settimeout(30)
 
 """
 LEVEL 1 IMPLEMENTATION:
@@ -45,7 +45,7 @@ dp = dp.decode()
 Z = seq = charsent = 0
 dp_size = len(dp)
 accepted = 0
-packet_size = int(ceil(0.125 * dp_size)) #set 1/4 of size as best guess packet size
+packet_size = int(ceil(0.0625 * dp_size)) #set 1/4 of size as best guess packet size
 
 print(f"Length: {dp_size}")
 
@@ -79,7 +79,7 @@ while charsent < dp_size:
 
         charsent += packet_size 
         seq += 1
-        packet_size += int(ceil(.125*(dp_size-packet_size)))
+        packet_size += int(ceil(0.0625*(dp_size-packet_size)))
         print(f"Current packet size {packet_size}, rem{dp_size-packet_size}")
 
     except socket.timeout:
