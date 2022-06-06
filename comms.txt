@@ -1,0 +1,7 @@
+python3 sender.py -f get_data?student_id=44919a94 -a 10.0.1.175 -s 9000 -c 6745 -i 44919a94
+
+ssh -i "projkey1.pem" ubuntu@13.212.57.172
+
+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
+
+wget http://54.169.121.89:5000/get_data?student_id=44919a94
