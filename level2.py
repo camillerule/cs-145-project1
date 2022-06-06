@@ -11,7 +11,7 @@ def compute_checksum(packet):
 #Initialize parameters from terminal command
 #-f path/to/file.txt -a SERVER IP ADDR -s SERVER PORT -c STUDENT PORT -i STUDENT ID
 comms = sys.argv[1:]
-fn, UDP_IP_ADDRESS, UDP_PORT_NO, CLIENT_PORT, ID = comms[1], comms[3], comms[5], comms[7], comms[9]
+fn, UDP_IP_ADDRESS, UDP_PORT_NO, CLIENT_PORT, ID = comms[1], comms[3], int(comms[5]), int(comms[7]), comms[9]
 UDP_IP_PORT = (UDP_IP_ADDRESS, UDP_PORT_NO)
 
 #Create socket for receiving packets from server 
@@ -76,9 +76,10 @@ while charsent < dp_size:
 
         charsent += packet_size 
         seq += 1
-        packet_size += int(ceil(.25*(dp_size-packet_size)))
+        packet_size += int(ceil(.50*(dp_size-packet_size)))
+        print(f"Current packet size {packet_size}, rem{dp_size-packet_size}")
 
     except socket.timeout:
         print("Server NACKed")
-        packet_size -= int(ceil(.25*(packet_size)))
+        packet_size -= int(ceil(.50*(packet_size)))
 
