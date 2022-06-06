@@ -46,6 +46,7 @@ Z = seq = charsent = 0
 dp_size = len(dp)
 accepted = 0
 increment = 0
+maxed = 0
 packet_size = int(ceil(0.03125 * dp_size)) #set 1/4 of size as best guess packet size
 
 print(f"Length: {dp_size}")
@@ -54,7 +55,7 @@ print(f"Length: {dp_size}")
 while charsent < dp_size:
     #last packet
     if (charsent + packet_size >= dp_size):
-        rem = dp - (charsent + packet_size)
+        rem = dp_size - (charsent + packet_size)
         if rem == 0:
             Z = 1
             payload = (f"{intent}SN{str(seq).zfill(7)}TXN{trans_id}LAST{Z}{dp[charsent:dp_size]}")
@@ -80,15 +81,19 @@ while charsent < dp_size:
 
         charsent += packet_size 
         seq += 1
-        prev = packet_size
-        if accepted == 1 and increment == 0:
+        if increment == 0:
             packet_size += int(ceil(0.02*(dp_size-packet_size)))
-            increment = 1
+        if accepted == 1 and increment == 1:
+            maxed = 1
 
         print(f"Current packet size {packet_size}, rem{dp_size-charsent}")
 
     except socket.timeout:
         print("Server NACKed")
-        if accepted == 1 and increment == 1:
+        prev = packet_size
+        if maxed == 1:
+            continue
+        if accepted == 1:
+            increment = 1
             packet_size = prev
 
