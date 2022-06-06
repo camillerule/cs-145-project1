@@ -32,6 +32,7 @@ clientSock.sendto(intent.encode(), UDP_IP_PORT)
 
 trans_id, addr = clientSock.recvfrom(1024)
 trans_id = trans_id.decode()
+print(f"Trans ID: {trans_id}")
 
 
 """
@@ -44,7 +45,7 @@ dp = dp.decode()
 Z = seq = charsent = 0
 dp_size = len(dp)
 accepted = 0
-packet_size = int(ceil(0.25 * dp_size)) #set 1/4 of size as best guess packet size
+packet_size = int(ceil(0.125 * dp_size)) #set 1/4 of size as best guess packet size
 
 print(f"Length: {dp_size}")
 
@@ -64,9 +65,11 @@ while charsent < dp_size:
     checksum = compute_checksum(payload)
     sentTime = time.time()
     clientSock.sendto(payload.encode(), UDP_IP_PORT)
+    print("Packet sending...")
     try:
         response, addr = clientSock.recvfrom(1024) 
         accepted = 1
+        print("ACK received...")
         rescheck = response.decode()
         rescheck = rescheck[23:]
 
@@ -76,7 +79,7 @@ while charsent < dp_size:
 
         charsent += packet_size 
         seq += 1
-        packet_size += int(ceil(.50*(dp_size-packet_size)))
+        packet_size += int(ceil(.125*(dp_size-packet_size)))
         print(f"Current packet size {packet_size}, rem{dp_size-packet_size}")
 
     except socket.timeout:
