@@ -217,7 +217,7 @@ while charsent < dp_size:
             continue
         
         #if accepted flag has not been set to 1, inital packet sent was not accepted, adjust payload size
-        #values same as used during incrementation
+        #values same as used during incrementation of initial packet
         if accepted == 0:
             packet_size -= int(ceil(0.02*(dp_size-packet_size)))
         
@@ -226,11 +226,12 @@ while charsent < dp_size:
         #1) payload size
         #2) being in the queue
         #in this case, we want to decrease payload size still and send again 
+        #in general, increment bigger, decrement smaller
         elif accepted == 1:
             #set increment flag to 1 to signify that we can't increment payload size anymore
             increment = 1
-            packet_size -= int(ceil(0.02*(dp_size-packet_size)))
-            
+            packet_size -= int(ceil(0.005*(dp_size-packet_size)))
+
     #checker if 120 second time allotment has passes
     if time.time() - startTime > 120:
         break
