@@ -47,7 +47,7 @@ UDP_IP_PORT = (UDP_IP_ADDRESS, UDP_PORT_NO)
 #Create socket for receiving packets from server 
 clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 clientSock.bind(('', 6745)) #bind at port 6745 (designated port for student)
-clientSock.settimeout(15) #set timeout to default 15 seconds
+clientSock.settimeout(10) #set timeout to default 10 seconds
 
 """
 LEVEL 1 IMPLEMENTATION:
@@ -66,7 +66,7 @@ print(f"Trans ID: {trans_id}")
 
 
 """
-LEVEL 2 AND 3 IMPLEMENTATION
+LEVEL 2 IMPLEMENTATION
 """
 #Open payload file and parse contents
 f = open(fn,"rb")
@@ -78,11 +78,7 @@ Set appropriate flags
 Z variable is the Z flag which denotes last packet in transmission, initially 0
 seq variable keeps track of the sequence number of packet, initially 0
 charsent denotes how many characters of the payload has been sent thus far, initially 0
-"""
-Z = seq = charsent = 0
-dp_size = len(dp) #get length of payload for reference
 
-"""
 `accepted` flag if server accepts transmission of a packet, initially 0
 (server has not accepted any packet yet)
 
@@ -92,10 +88,12 @@ dp_size = len(dp) #get length of payload for reference
 empty string `sent` to keep track of all sent data from payload
 (will be useful to check if correct packets are sent)
 """
-accepted = 0
-increment = 0
-maxed = 0
+Z = seq = charsent = 0
+accepted = increment = maxed = 0
+dp_size = len(dp) #get length of payload for reference
 sent = ''
+
+
 
 """
 set a fraction of payload size as best guess packet size
@@ -104,9 +102,9 @@ value was taken by trial and error, started from taking 1/2 of payload size -> 1
 packet_size = int(ceil(0.03125 * dp_size)) 
 
 print(f"Length: {dp_size}")
-
 #start timer for timeout (to check if packets were not ACKed)
 startTime = time.time()
+
 #start sending
 while charsent < dp_size:
     #last packet rules
@@ -146,7 +144,7 @@ while charsent < dp_size:
     #use provided checksum function to generate checksum (client side)
     checksum = compute_checksum(payload)
     
-    #send payload to client
+    #send payload to server
     clientSock.sendto(payload.encode(), UDP_IP_PORT)
     print("Packet sending...")
 
@@ -172,8 +170,8 @@ while charsent < dp_size:
 
         #if checksums are not equal, break transmission 
         if rescheck != checksum:
-            print(f"Server checksum{rescheck}")
-            print(f"Client checksum{checksum}")
+            print(f"Server checksum: {rescheck}")
+            print(f"Client checksum: {checksum}")
             print("Checksum error")
             break 
 
@@ -203,6 +201,7 @@ while charsent < dp_size:
             maxed = 1
 
         print(f"Current packet size {packet_size}, remaining {dp_size-charsent}")
+        print(f"Current payload{payload}")
         """
         if timeout is reached, packet has not been ACKed by server. we have the following scenarios:
             1) Initial packet size not accepted by server
@@ -230,7 +229,7 @@ while charsent < dp_size:
         elif accepted == 1:
             #set increment flag to 1 to signify that we can't increment payload size anymore
             increment = 1
-            packet_size -= int(ceil(0.005*(dp_size-packet_size)))
+            packet_size -= int(ceil(0.003*(dp_size-packet_size)))
 
     #checker if 120 second time allotment has passes
     if time.time() - startTime > 120:
