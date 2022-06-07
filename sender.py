@@ -11,7 +11,18 @@ def compute_checksum(packet):
 #Initialize parameters from terminal command
 #-f path/to/file.txt -a SERVER IP ADDR -s SERVER PORT -c STUDENT PORT -i STUDENT ID
 comms = sys.argv[1:]
-fn, UDP_IP_ADDRESS, UDP_PORT_NO, CLIENT_PORT, ID = comms[1], comms[3], int(comms[5]), int(comms[7]), comms[9]
+for comm in range(len(comms)):
+    if comms[comm] == '-f': #filename
+        fn = comms[comm+1]
+    elif comms[comm] == '-a': #IP address of server
+        UDP_IP_ADDRESS = comms[comm+1]
+    elif comms[comm] == '-s': #Server port
+        UDP_PORT_NO = int(comms[comm+1]) 
+    elif comms[comm] == '-c': #Client port
+        CLIENT_PORT = int(comms[comm+1])
+    elif comms[comm] == '-i': #Student ID
+        ID = comms[comm+1]
+
 UDP_IP_PORT = (UDP_IP_ADDRESS, UDP_PORT_NO)
 
 #Create socket for receiving packets from server 
